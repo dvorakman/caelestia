@@ -10,6 +10,9 @@
 
 .SRCINFO
 
+# Claude Code documentation (personal, not for sharing)
+CLAUDE.md
+
 # Shell history and sensitive variables
 *_history
 .bash_history
