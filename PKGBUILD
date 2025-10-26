@@ -27,4 +27,6 @@ optdepends=('thunar: file manager'
             'virt-manager: virtual machine management'
             'libvirt: virtualization API'
             'qemu-desktop: QEMU virtualization'
-            'edk2-ovmf: UEFI firmware for VMs')
+            'edk2-ovmf: UEFI firmware for VMs'
+            'greetd: login manager'
+            'greetd-tuigreet: TUI greeter for greetd')

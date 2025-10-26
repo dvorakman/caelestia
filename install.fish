@@ -8,13 +8,14 @@ argparse -n 'install.fish' -X 0 \
     'discord' \
     'zen' \
     'virt-manager' \
+    'greetd' \
     'aur-helper=!contains -- "$_flag_value" yay paru' \
     -- $argv
 or exit
 
 # Print help
 if set -q _flag_h
-    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--zen] [--virt-manager] [--aur-helper]'
+    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--zen] [--virt-manager] [--greetd] [--aur-helper]'
     echo
     echo 'options:'
     echo '  -h, --help                  show this help message and exit'
@@ -24,6 +25,7 @@ if set -q _flag_h
     echo '  --discord                   install Discord (OpenAsar + Equicord)'
     echo '  --zen                       install Zen browser'
     echo '  --virt-manager              install virt-manager and virtualization stack'
+    echo '  --greetd                    install greetd login manager with tuigreet'
     echo '  --aur-helper=[yay|paru]     the AUR helper to use'
 
     exit
@@ -311,6 +313,36 @@ if set -q _flag_virt_manager
     sudo systemctl enable --now libvirtd.service
 
     log 'Virt-manager installation complete. Please log out and log back in for group changes to take effect.'
+end
+
+# Install greetd
+if set -q _flag_greetd
+    log 'Installing greetd login manager with tuigreet...'
+    $aur_helper -S --needed greetd greetd-tuigreet $noconfirm
+
+    # Create greeter user if it doesn't exist
+    if ! id greeter &> /dev/null
+        log 'Creating greeter user...'
+        sudo useradd -M -G video -s /bin/bash greeter
+    end
+
+    # Copy greetd config
+    log 'Installing greetd configuration...'
+    sudo cp (realpath greetd/config.toml) /etc/greetd/config.toml
+
+    # Disable conflicting display managers
+    for dm in gdm sddm lightdm ly
+        if systemctl is-enabled $dm.service &> /dev/null
+            log "Disabling conflicting display manager: $dm"
+            sudo systemctl disable $dm.service
+        end
+    end
+
+    # Enable greetd
+    log 'Enabling greetd service...'
+    sudo systemctl enable greetd.service
+
+    log 'Greetd installation complete. Please reboot for the login manager to take effect.'
 end
 
 # Generate scheme stuff if needed
