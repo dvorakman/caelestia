@@ -183,7 +183,7 @@ end
 
 log 'Building and installing caelestia-cli-personal...'
 cd $cli_fork_path
-makepkg -si $noconfirm -p PKGBUILD.personal
+makepkg -si $noconfirm -p PKGBUILD
 cd $dotfiles_dir
 
 # Clone or update Shell fork
@@ -208,7 +208,7 @@ end
 
 log 'Building and installing caelestia-shell-personal...'
 cd $shell_fork_path
-makepkg -si $noconfirm -p PKGBUILD.personal
+makepkg -si $noconfirm -p PKGBUILD
 cd $dotfiles_dir
 
 # Install metapackage for deps
