@@ -10,6 +10,14 @@
 
 .SRCINFO
 
+# Arch package build artifacts
+*.pkg.tar.zst
+*.pkg.tar.xz
+
+# Personal build variants and files
+*.personal
+PKGBUILD.personal
+
 # Claude Code documentation (personal, not for sharing)
 CLAUDE.md
 

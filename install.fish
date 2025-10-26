@@ -154,6 +154,63 @@ end
 # Cd into dir
 cd (dirname (status filename)) || exit 1
 
+# Personal fork configuration
+set -l fork_user 'dvorakman'
+set -l upstream_user 'caelestia-dots'
+set -l cli_fork_path $HOME/.local/share/caelestia-cli
+set -l shell_fork_path $HOME/.config/quickshell/caelestia
+set -l dotfiles_dir (pwd)
+
+# Clone or update CLI fork
+if test -d $cli_fork_path/.git
+    log 'CLI fork already exists, updating...'
+    if ! set -q _flag_noconfirm
+        input 'Pull latest changes from dvorakman/cli? [Y/n] ' -n
+        set -l update (sh-read)
+        if test "$update" != 'n' -a "$update" != 'N'
+            git -C $cli_fork_path pull
+        end
+    else
+        git -C $cli_fork_path pull
+    end
+else
+    log "Cloning CLI fork from https://github.com/$fork_user/cli..."
+    mkdir -p (dirname $cli_fork_path)
+    git clone https://github.com/$fork_user/cli.git $cli_fork_path
+    git -C $cli_fork_path remote add upstream https://github.com/$upstream_user/cli.git
+    log 'CLI fork cloned and upstream remote added'
+end
+
+log 'Building and installing caelestia-cli-personal...'
+cd $cli_fork_path
+makepkg -si $noconfirm -p PKGBUILD.personal
+cd $dotfiles_dir
+
+# Clone or update Shell fork
+if test -d $shell_fork_path/.git
+    log 'Shell fork already exists, updating...'
+    if ! set -q _flag_noconfirm
+        input 'Pull latest changes from dvorakman/shell? [Y/n] ' -n
+        set -l update (sh-read)
+        if test "$update" != 'n' -a "$update" != 'N'
+            git -C $shell_fork_path pull
+        end
+    else
+        git -C $shell_fork_path pull
+    end
+else
+    log "Cloning Shell fork from https://github.com/$fork_user/shell..."
+    mkdir -p (dirname $shell_fork_path)
+    git clone https://github.com/$fork_user/shell.git $shell_fork_path
+    git -C $shell_fork_path remote add upstream https://github.com/$upstream_user/shell.git
+    log 'Shell fork cloned and upstream remote added'
+end
+
+log 'Building and installing caelestia-shell-personal...'
+cd $shell_fork_path
+makepkg -si $noconfirm -p PKGBUILD.personal
+cd $dotfiles_dir
+
 # Install metapackage for deps
 log 'Installing metapackage...'
 if test $aur_helper = yay
