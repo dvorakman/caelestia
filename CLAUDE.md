@@ -202,3 +202,26 @@ This dotfiles repo works with:
 - **caelestia-cli** - Commands for theme/wallpaper management (`caelestia scheme`, `caelestia wallpaper`, etc.)
 
 Shell config auto-loads if installed via the `install.fish` script through `hypr/hyprland/execs.conf`.
+
+## Key Hyprland Keybinds
+
+Understanding these keybinds is essential when working with or testing the configuration:
+
+- `Super` - Open launcher
+- `Super` + `#` - Switch to workspace `#`
+- `Super` `Alt` + `#` - Move window to workspace `#`
+- `Super` + `T` - Open terminal (foot)
+- `Super` + `W` - Open browser (zen)
+- `Super` + `C` - Open IDE (vscodium)
+- `Super` + `S` - Toggle special workspace or close current special workspace
+- `Ctrl` `Alt` + `Delete` - Open session menu
+- `Ctrl` `Super` + `Space` - Toggle media play state
+- `Ctrl` `Super` `Alt` + `R` - Restart the shell
+
+All keybinds are defined in `hypr/hyprland/keybinds.conf`.
+
+## Important Notes
+
+**Login Manager:** These dotfiles do not include a login manager. The system assumes a login manager (like greetd/tuigreet) is already configured, or the user logs in from a TTY.
+
+**Symlink Architecture:** Since all configs are symlinked, editing files in `~/.config/` directories directly modifies the git repository. This is by design but requires care when committing changes.
