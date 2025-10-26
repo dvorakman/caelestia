@@ -9,3 +9,36 @@
 /fish/fish_variables
 
 .SRCINFO
+
+# Shell history and sensitive variables
+*_history
+.bash_history
+.zsh_history
+
+# Credentials and secrets
+*.key
+*.pem
+*.p12
+*.pfx
+.env
+.env.*
+*secret*
+*credential*
+
+# SSH and GPG
+.ssh/
+.gnupg/
+
+# Browser session data (in case it ever gets added)
+**/sessionstore*
+**/cookies.sqlite*
+**/logins.json
+
+# Editor/IDE secrets
+.vscode/settings.json.user
+*.code-workspace
+
+# Cache and state directories
+**/.cache/
+**/cache/
+**/.local/state/
