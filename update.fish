@@ -83,27 +83,44 @@ function update_repo -a name path
 
     log "Updating $name..."
 
-    # Get current commit
+    # Get current commit and branch
     set -l before_commit (git -C $path rev-parse HEAD)
+    set -l current_branch (git -C $path branch --show-current)
 
-    # Fetch from upstream
-    log "Fetching from upstream..."
-    if not git -C $path fetch upstream
-        error "Failed to fetch from upstream"
-        return 1
-    end
-
-    # Check if upstream-only mode
+    # Step 1: Pull from origin (your fork) unless upstream-only mode
     if not set -q _flag_upstream_only
         # Fetch from origin (your fork)
         log "Fetching from origin..."
         if not git -C $path fetch origin
             warn "Failed to fetch from origin"
+        else
+            # Check if origin is ahead of local
+            set -l origin_commit (git -C $path rev-parse origin/$current_branch 2>/dev/null)
+            if test -n "$origin_commit" -a "$before_commit" != "$origin_commit"
+                # Check if we can fast-forward
+                set -l merge_base (git -C $path merge-base HEAD origin/$current_branch)
+                if test "$merge_base" = "$before_commit"
+                    log "Pulling changes from your fork (origin/$current_branch)..."
+                    if git -C $path merge origin/$current_branch --ff-only
+                        success "Fast-forwarded from origin"
+                        set before_commit (git -C $path rev-parse HEAD)
+                    else
+                        warn "Cannot fast-forward from origin, you may have diverged"
+                    end
+                else
+                    warn "Local branch has diverged from origin, skipping origin merge"
+                    log "Run 'git -C $path status' to see divergence"
+                end
+            end
         end
     end
 
-    # Get current branch
-    set -l current_branch (git -C $path branch --show-current)
+    # Step 2: Fetch from upstream
+    log "Fetching from upstream..."
+    if not git -C $path fetch upstream
+        error "Failed to fetch from upstream"
+        return 1
+    end
 
     # Check if there are upstream changes
     set -l upstream_commit (git -C $path rev-parse upstream/$current_branch)
