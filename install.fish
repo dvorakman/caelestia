@@ -7,13 +7,14 @@ argparse -n 'install.fish' -X 0 \
     'vscode=?!contains -- "$_flag_value" codium code' \
     'discord' \
     'zen' \
+    'virt-manager' \
     'aur-helper=!contains -- "$_flag_value" yay paru' \
     -- $argv
 or exit
 
 # Print help
 if set -q _flag_h
-    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--aur-helper]'
+    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--zen] [--virt-manager] [--aur-helper]'
     echo
     echo 'options:'
     echo '  -h, --help                  show this help message and exit'
@@ -22,6 +23,7 @@ if set -q _flag_h
     echo '  --vscode=[codium|code]      install VSCodium (or VSCode)'
     echo '  --discord                   install Discord (OpenAsar + Equicord)'
     echo '  --zen                       install Zen browser'
+    echo '  --virt-manager              install virt-manager and virtualization stack'
     echo '  --aur-helper=[yay|paru]     the AUR helper to use'
 
     exit
@@ -293,6 +295,22 @@ if set -q _flag_zen
 
     # Prompt user to install extension
     log 'Please install the CaelestiaFox extension from https://addons.mozilla.org/en-US/firefox/addon/caelestiafox if you have not already done so.'
+end
+
+# Install virt-manager
+if set -q _flag_virt_manager
+    log 'Installing virt-manager and virtualization stack...'
+    $aur_helper -S --needed virt-manager libvirt qemu-desktop edk2-ovmf dnsmasq dmidecode $noconfirm
+
+    # Add user to libvirt group
+    log 'Adding user to libvirt group...'
+    sudo usermod -aG libvirt $USER
+
+    # Enable and start libvirtd service
+    log 'Enabling libvirtd service...'
+    sudo systemctl enable --now libvirtd.service
+
+    log 'Virt-manager installation complete. Please log out and log back in for group changes to take effect.'
 end
 
 # Generate scheme stuff if needed

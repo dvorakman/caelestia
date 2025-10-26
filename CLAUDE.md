@@ -30,6 +30,7 @@ cd ~/.local/share/caelestia
   --vscode=[codium|code]      # Install VSCode/VSCodium config
   --discord                   # Install Discord config
   --zen                       # Install Zen browser config
+  --virt-manager              # Install virt-manager and virtualization stack
   --aur-helper=[yay|paru]     # Specify AUR helper
 ```
 

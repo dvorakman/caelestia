@@ -23,4 +23,8 @@ optdepends=('thunar: file manager'
             'gnome-keyring: keyring daemon'
             'polkit-gnome: gnome polkit client'
             'direnv: isolated dev envs'
-            'zoxide: better cd')
+            'zoxide: better cd'
+            'virt-manager: virtual machine management'
+            'libvirt: virtualization API'
+            'qemu-desktop: QEMU virtualization'
+            'edk2-ovmf: UEFI firmware for VMs')
